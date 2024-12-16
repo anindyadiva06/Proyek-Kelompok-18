@@ -1,11 +1,186 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    tes
-</body>
-</html>
+domains
+    penyakit = string
+    gejala = symbol
+    query = string
+    jawab = char
+
+database
+    dbmengalami(gejala)
+    dbtdkmengalami(gejala)
+
+predicates
+    penyebab(penyakit)
+    go
+    mengalami(query, gejala)
+    tdkmengalami(query, gejala)
+    gejala(gejala)
+    clear_fakta2
+    simpan(gejala, jawab)
+    tanya(query, gejala, jawab)
+    go_once
+    diagnosa(penyakit)
+    solusi(penyakit)
+
+goal
+    clearwindow,
+    makewindow(1, 7, 7, "HALO", 0, 0, 24, 80),
+    go,
+    removewindow.
+
+clauses
+go:-
+    go_once, nl, nl, nl, nl, nl,
+    write("Ingin mengulang lagi (Y/T) ?"),
+    readchar(Jawab), nl,
+    clearwindow,
+    Jawab = 'y',
+    go.
+
+go_once:-
+    diagnosa(_), !,
+    save("test.dat"),
+    clear_fakta2.
+
+go_once:-
+    write("Maaf penyakit tidak bisa didiagnosa"), nl, clear_fakta2.
+
+mengalami(_, Gejala):-
+    dbmengalami(Gejala), !.
+
+mengalami(Query, Gejala):-
+    not(dbtdkmengalami(Gejala)),
+    tanya(Query, Gejala, Jawab),
+    Jawab = 'y'.
+
+tdkmengalami(_, Gejala):-
+    dbtdkmengalami(Gejala), !.
+
+tdkmengalami(Query, Gejala):-
+    not(dbmengalami(Gejala)),
+    tanya(Query, Gejala, Jawab),
+    Jawab = 't'.
+
+tanya(Query, Gejala, Jawab):-
+    write(Query),
+    readchar(Jawab),
+    write(Jawab), nl,
+    simpan(Gejala, Jawab).
+
+simpan(Gejala, 'y'):-
+    asserta(dbmengalami(Gejala)).
+
+simpan(Gejala, 't'):-
+    asserta(dbtdkmengalami(Gejala)).
+
+clear_fakta2:-
+    retract(dbmengalami(_)), fail.
+
+clear_fakta2:-
+    retract(dbtdkmengalami(_)), fail.
+
+clear_fakta2.
+
+/*------------gejala-----------*/
+    gejala(Gejala):-
+        dbmengalami(Gejala),!.
+    gejala(Gejala):-
+        dbtdkmengalami(Gejala),!,
+        fail.
+gejala(g1) :- write("Apakah ayam mengalami ngorok (y/t)? ").
+gejala(g2) :- write("Apakah ayam bersin-bersin (y/t)? ").
+gejala(g3) :- write("Apakah ayam sulit bernapas (y/t)? ").
+gejala(g4) :- write("Apakah ayam kurang nafsu makan (y/t)? ").
+gejala(g5) :- write("Apakah jengger ayam berwarna biru (y/t)? ").
+gejala(g6) :- write("Apakah sayap ayam turun dan terlihat kusam (y/t)? ").
+gejala(g7) :- write("Apakah leher ayam berputar ke arah bawah (y/t)? ").
+gejala(g8) :- write("Apakah kotoran ayam berwarna putih (y/t)? ").
+gejala(g9) :- write("Apakah ayam mudah mengantuk (y/t)? ").
+gejala(g10) :- write("Apakah gerakan ayam lambat (y/t)? ").
+gejala(g11) :- write("Apakah terdapat bintik-bintik merah pada kaki ayam (y/t)? ").
+gejala(g12) :- write("Apakah keluar cairan pada mata ayam (y/t)? ").
+gejala(g13) :- write("Apakah ayam batuk (y/t)? ").
+gejala(g14) :- write("Apakah keluar cairan dari rongga mulut ayam (y/t)? ").
+gejala(g15) :- write("Apakah ayam mati mendadak (y/t)? ").
+gejala(g16) :- write("Apakah terjadi peradangan di sekitar dubur ayam (y/t)? ").
+gejala(g17) :- write("Apakah ayam menjadi lesu (y/t)? ").
+gejala(g18) :- write("Apakah badan ayam demam (y/t)? ").
+gejala(g19) :- write("Apakah keluar lendir dari hidung ayam (y/t)? ").
+gejala(g20) :- write("Apakah mata ayam bengkak serta berair (y/t)? ").
+
+/* --------------------diagnosa------------------ */
+diagnosa(flu_burung):-
+    mengalami("Apakah ayam mengalami ngorok (y/t)? ", g1),
+    mengalami("Apakah ayam bersin-bersin (y/t)? ", g2),
+    mengalami("Apakah ayam sulit bernapas (y/t)? ", g3),
+    mengalami("Apakah ayam kurang nafsu makan (y/t)? ", g4),
+    mengalami("Apakah jengger ayam berwarna biru (y/t)? ", g5),
+    mengalami("Apakah sayap ayam turun dan terlihat kusam (y/t)? ", g6),
+    mengalami("Apakah leher ayam berputar ke arah bawah (y/t)? ", g7),
+    solusi(flu_burung).
+
+diagnosa(newcastle_disease):-
+    mengalami("Apakah ayam kurang nafsu makan (y/t)? ", g4),
+    mengalami("Apakah sayap ayam turun dan terlihat kusam (y/t)? ", g6),
+    mengalami("Apakah kotoran ayam berwarna putih (y/t)? ", g8),
+    mengalami("Apakah ayam mudah mengantuk (y/t)? ", g9),
+    mengalami("Apakah gerakan ayam lambat (y/t)? ", g10),
+    solusi(newcastle_disease).
+
+diagnosa(berak_kapur):-
+    mengalami("Apakah ayam mengalami ngorok (y/t)? ", g1),
+    mengalami("Apakah ayam bersin-bersin (y/t)? ", g2),
+    mengalami("Apakah ayam sulit bernapas (y/t)? ", g3),
+    mengalami("Apakah jengger ayam berwarna biru (y/t)? ", g5),
+    mengalami("Apakah terdapat bintik-bintik merah pada kaki ayam (y/t)? ", g11),
+    mengalami("Apakah keluar cairan pada mata ayam (y/t)? ", g12),
+    mengalami("Apakah ayam batuk (y/t)? ", g13),
+    mengalami("Apakah keluar cairan dari rongga mulut ayam (y/t)? ", g14),
+    mengalami("Apakah ayam mati mendadak (y/t)? ", g15),
+    solusi(berak_kapur).
+
+diagnosa(gumboro):-
+    mengalami("Apakah ayam kurang nafsu makan (y/t)? ", g4),
+    mengalami("Apakah kotoran ayam berwarna putih (y/t)? ", g8),
+    mengalami("Apakah terjadi peradangan di sekitar dubur ayam (y/t)? ", g16),
+    mengalami("Apakah ayam menjadi lesu (y/t)? ", g17),
+    solusi(gumboro).
+
+diagnosa(snot):-
+    mengalami("Apakah ayam sulit bernapas (y/t)? ", g3),
+    mengalami("Apakah ayam mudah mengantuk (y/t)? ", g9),
+    mengalami("Apakah badan ayam demam (y/t)? ", g18),
+    mengalami("Apakah keluar lendir dari hidung ayam (y/t)? ", g19),
+    mengalami("Apakah mata ayam bengkak serta berair (y/t)? ", g20),
+    solusi(snot).
+
+/* --------------------penyebab------------------ */
+penyebab(flu_burung) :- write("Penyakit ini disebabkan oleh virus flu burung.").
+penyebab(newcastle_disease) :- write("Penyakit ini disebabkan oleh virus Newcastle disease.").
+penyebab(berak_kapur) :- write("Penyakit ini disebabkan oleh bakteri berak kapur.").
+penyebab(gumboro) :- write("Penyakit ini disebabkan oleh virus Gumboro.").
+penyebab(snot) :- write("Penyakit ini disebabkan oleh bakteri Haemophilus paragallinarum.").
+
+/* --------------------solusi------------------ */
+solusi(flu_burung):-
+    write("DIAGNOSA PENYAKIT AYAM KAMPUNG - H1D022002"), nl,
+    write("Penyakit Anda adalah Flu Burung"), nl,
+    penyebab(flu_burung).
+
+solusi(newcastle_disease):-
+    write("DIAGNOSA PENYAKIT AYAM KAMPUNG - H1D022002"), nl,
+    write("Penyakit Anda adalah Newcastle Disease"), nl,
+    penyebab(newcastle_disease).
+
+solusi(berak_kapur):-
+    write("DIAGNOSA PENYAKIT AYAM KAMPUNG - H1D022002"), nl,
+    write("Penyakit Anda adalah Berak Kapur"), nl,
+    penyebab(berak_kapur).
+
+solusi(gumboro):-
+    write("DIAGNOSA PENYAKIT AYAM KAMPUNG - H1D022002"), nl,
+    write("Penyakit Anda adalah Gumboro"), nl,
+    penyebab(gumboro).
+
+solusi(snot):-
+    write("DIAGNOSA PENYAKIT AYAM KAMPUNG - H1D022002"), nl,
+    write("P
